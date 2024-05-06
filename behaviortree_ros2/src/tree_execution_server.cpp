@@ -96,6 +96,11 @@ TreeExecutionServer::nodeBaseInterface()
   return p_->node->get_node_base_interface();
 }
 
+rclcpp::Node::SharedPtr TreeExecutionServer::node()
+{
+  return p_->node;
+}
+
 rclcpp_action::GoalResponse
 TreeExecutionServer::handle_goal(const rclcpp_action::GoalUUID& /* uuid */,
                                  std::shared_ptr<const ExecuteTree::Goal> goal)
