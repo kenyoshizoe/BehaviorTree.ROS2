@@ -134,17 +134,13 @@ void LoadRosPlugins(BT::BehaviorTreeFactory& factory, const std::string& directo
   }
 }
 
-void RegisterBehaviorTrees(bt_server::Params& params, BT::BehaviorTreeFactory& factory,
-                           rclcpp::Node::SharedPtr node)
+void LoadPlugins(bt_server::Params& params, BT::BehaviorTreeFactory& factory,
+                 rclcpp::Node::SharedPtr node)
 {
-  // clear the factory and load/reload it with the Behaviors and Trees specified by the user in their [bt_action_server] config yaml
-  factory.clearRegisteredBehaviorTrees();
-
   BT::RosNodeParams ros_params;
   ros_params.nh = node;
   ros_params.server_timeout = std::chrono::milliseconds(params.ros_plugins_timeout);
   ros_params.wait_for_server_timeout = ros_params.server_timeout;
-
   for(const auto& plugin : params.plugins)
   {
     const auto plugin_directory = GetDirectoryPath(plugin);
@@ -155,7 +151,10 @@ void RegisterBehaviorTrees(bt_server::Params& params, BT::BehaviorTreeFactory& f
     }
     LoadRosPlugins(factory, plugin_directory, ros_params);
   }
+}
 
+void RegisterBehaviorTrees(bt_server::Params& params, BT::BehaviorTreeFactory& factory)
+{
   for(const auto& tree_dir : params.behavior_trees)
   {
     const auto tree_directory = GetDirectoryPath(tree_dir);
