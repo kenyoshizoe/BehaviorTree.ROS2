@@ -88,10 +88,6 @@ TreeExecutionServer::TreeExecutionServer(const rclcpp::NodeOptions& options)
       [this](const std::shared_ptr<GoalHandleExecuteTree> goal_handle) {
         handle_accepted(std::move(goal_handle));
       });
-
-  // register the users Plugins and BehaviorTree.xml files into the factory
-  RegisterBehaviorTrees(p_->params, p_->factory, p_->node);
-  registerNodesIntoFactory(p_->factory);
 }
 
 rclcpp::node_interfaces::NodeBaseInterface::SharedPtr
@@ -144,11 +140,14 @@ void TreeExecutionServer::execute(
   auto action_result = std::make_shared<ExecuteTree::Result>();
 
   // Before executing check if we have new Behaviors or Subtrees to reload
-  if(p_->param_listener->is_old(p_->params))
+  if(p_->param_listener->is_old(p_->params) || !bt_loaded_)
   {
+    p_->factory.clearRegisteredBehaviorTrees();
     p_->params = p_->param_listener->get_params();
-    RegisterBehaviorTrees(p_->params, p_->factory, p_->node);
+    LoadPlugins(p_->params, p_->factory, p_->node);
     registerNodesIntoFactory(p_->factory);
+    RegisterBehaviorTrees(p_->params, p_->factory);
+    bt_loaded_ = true;
   }
 
   // Loop until something happens with ROS or the node completes

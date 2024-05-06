@@ -121,6 +121,7 @@ protected:
 private:
   struct Pimpl;
   std::unique_ptr<Pimpl> p_;
+  bool bt_loaded_ = false;
 
   /**
    * @brief handle the goal requested: accept or reject. This implementation always accepts.
