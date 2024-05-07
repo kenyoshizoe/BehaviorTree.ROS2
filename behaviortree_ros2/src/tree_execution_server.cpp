@@ -145,7 +145,11 @@ void TreeExecutionServer::execute(
     p_->factory.clearRegisteredBehaviorTrees();
     p_->params = p_->param_listener->get_params();
     LoadPlugins(p_->params, p_->factory, p_->node);
-    registerNodesIntoFactory(p_->factory);
+    try {
+      registerNodesIntoFactory(p_->factory);
+    } catch (const std::exception& e) {
+      RCLCPP_ERROR(kLogger, "Failed to registerNodesIntoFactory(): %s", e.what());
+    }
     RegisterBehaviorTrees(p_->params, p_->factory);
     bt_loaded_ = true;
   }
