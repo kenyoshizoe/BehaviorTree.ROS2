@@ -96,9 +96,9 @@ TreeExecutionServer::nodeBaseInterface()
   return p_->node->get_node_base_interface();
 }
 
-rclcpp::Node::SharedPtr TreeExecutionServer::node()
+std::weak_ptr<rclcpp::Node> TreeExecutionServer::node()
 {
-  return p_->node;
+  return std::dynamic_pointer_cast<rclcpp::Node>(p_->node);
 }
 
 rclcpp_action::GoalResponse

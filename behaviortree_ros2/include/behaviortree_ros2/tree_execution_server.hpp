@@ -56,7 +56,7 @@ public:
    */
   rclcpp::node_interfaces::NodeBaseInterface::SharedPtr nodeBaseInterface();
 
-  rclcpp::Node::SharedPtr node();
+  std::weak_ptr<rclcpp::Node> node();
 
   // name of the tree being executed
   const std::string& currentTreeName() const;
